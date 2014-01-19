@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Welcome!{% endblock %}{% if app_title %} - {{ app_title }}{% endif %}</title>
+
+  {% block stylesheets %}
+    <link rel="stylesheet" href="/css/normalize.min.css">
+    <link rel="stylesheet" href="/css/foundation.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+      .row,
+      .contain-to-grid .top-bar {
+        max-width: 100rem;
+      }
+
+      .barcode, .barcode code {
+        color: black
+      }
+    </style>
+  {% endblock %}
+
+  <script src="/js/modernizr.min.js"></script>
+  <script src="/js/fastclick.min.js"></script>
+</head>
+<body>
+{% block header %}
+  <div class="contain-to-grid fixed">
+    <nav class="top-bar" data-topbar>
+      <ul class="title-area">
+        <li class="name">
+          <h1 style="font-family: serafine; font-size: 200%"><a href="{{ uri_for('home') }}">
+            {{ app_title }}
+          </a></h1>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+      </ul>
+
+      <section class="top-bar-section">
+        <ul class="right">
+          {% for entry in sitemap.children recursive %}
+            {% if entry.children | count %}
+              <li class="has-dropdown">
+                <a href="{{ entry.generate_url_with(uri_for) }}">{{ entry }}</a>
+                <ul class="dropdown">
+                  {{ loop(entry.children) }}
+                </ul>
+              </li>
+            {% else %}
+              <li>
+                <a href="{{ entry.generate_url_with(uri_for) }}">{{ entry }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </section>
+    </nav>
+  </div>
+  <br/>
+  <div class="row">
+    <ul class="breadcrumbs right" style="margin-top: 12px">
+      {% block breadcrumb %}
+        {% if sitemap.get_index()[route_prefix] %}
+          {% for entry in sitemap.get_index()[route_prefix].get_path() %}
+            <li class="{% if loop.last %} current{% endif %}{% if not entry.route %} unavailable{% endif %}"><a
+                    href="{{ entry.generate_url_with(uri_for) }}">{{ entry }}</a></li>
+          {% endfor %}
+        {% else %}
+          <li class="current"><a href="{{ uri_for('home') }}">Accueil</a></li>
+        {% endif %}
+      {% endblock %}
+    </ul>
+    <h2>{{ self.title() }}</h2>
+    {% if self.subtitle() %}
+      <h3>{% block subtitle %}{% endblock %}</h3>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block body %}
+  <div class="row">
+    {% block content %}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <br/>
+  <footer>
+    <div class="row">
+      <div class="right">
+        <a href="http://www.python.org/" rel="nofollow" target="_blank">
+          <img src="http://www.python.org/community/logos/python-logo-generic.svg" alt="Powered by python"
+               width="64px"/>
+        </a>
+        <a href="https://web.rdc.li/" rel="nofollow" target="_blank">
+          <img src="#" alt="Powered by rdc.web" width="64px"/>
+        </a>
+      </div>
+    </div>
+  </footer>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/foundation.min.js"></script>
+  <script>$(document).foundation();</script>
+{% endblock %}
+</body>
+</html>
